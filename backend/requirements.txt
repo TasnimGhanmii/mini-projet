@@ -1,0 +1,7 @@
+Django==4.2
+djangorestframework==3.14
+django-cors-headers==4.0
+pandas==2.0
+openpyxl==3.1
+reportlab==4.0
+djangorestframework-simplejwt==5.2  # For JWT authentication
