@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor Surveillance Assignment System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        h2 {
+            color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .success-message {
+            color: green;
+            background-color: #e7f9e7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        .error-message {
+            color: red;
+            background-color: #f9e7e7;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        .status-available {
+            color: green;
+            font-weight: bold;
+        }
+        .status-unavailable {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Professor Surveillance Assignment System</h1>
+            <p>Manage examination surveillance schedules efficiently</p>
+        </header>
+
+        <div class="section">
+            <h2>Upload Professor Data</h2>
+            <p>Upload Excel file containing professor information</p>
+            <form id="upload-form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="excel-file">Select Excel File:</label>
+                    <input type="file" id="excel-file" name="file" accept=".xlsx, .xls">
+                </div>
+                <button type="submit">Upload File</button>
+            </form>
+            <div id="upload-success" class="success-message">Excel file uploaded successfully!</div>
+            <div id="upload-error" class="error-message"></div>
+        </div>
+
+        <div class="section">
+            <h2>Professors List</h2>
+            <table id="professors-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Grade</th>
+                        <th>Max Hours</th>
+                        <th>Availability</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Prof. John Smith</td>
+                        <td>Computer Science</td>
+                        <td>PhD</td>
+                        <td>4</td>
+                        <td class="status-available">Available</td>
+                        <td><button class="toggle-availability" data-id="1" data-status="true">Make Unavailable</button></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Dr. Jane Doe</td>
+                        <td>Mathematics</td>
+                        <td>PhD</td>
+                        <td>3</td>
+                        <td class="status-unavailable">Unavailable</td>
+                        <td><button class="toggle-availability" data-id="2" data-status="false">Make Available</button></td>
+                    </tr>
+                    <!-- More professors would be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Exam Sessions</h2>
+            <table id="sessions-table">
+                <thead>
+                    <tr>
+                        <th>Session ID</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Professor 1</th>
+                        <th>Professor 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>S001</td>
+                        <td>2025-04-15</td>
+                        <td>09:00 - 11:00</td>
+                        <td>Not assigned</td>
+                        <td>Not assigned</td>
+                    </tr>
+                    <tr>
+                        <td>S002</td>
+                        <td>2025-04-15</td>
+                        <td>13:00 - 15:00</td>
+                        <td>Not assigned</td>
+                        <td>Not assigned</td>
+                    </tr>
+                    <!-- More sessions would be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Automatic Assignment</h2>
+            <p>Run the algorithm to automatically assign professors to surveillance sessions.</p>
+            <button id="run-assignment">Run Assignment Algorithm</button>
+            <div id="assignment-success" class="success-message">Sessions assigned successfully!</div>
+            <div id="assignment-error" class="error-message"></div>
+        </div>
+
+        <div class="section">
+            <h2>Generate Schedule</h2>
+            <p>Generate a PDF document containing the complete surveillance schedule.</p>
+            <button id="generate-pdf">Generate PDF Schedule</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // File Upload Form
+            document.getElementById('upload-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const fileInput = document.getElementById('excel-file');
+                const file = fileInput.files[0];
+
+                if (!file) {
+                    document.getElementById('upload-error').textContent = 'Please select a file';
+                    document.getElementById('upload-error').style.display = 'block';
+                    document.getElementById('upload-success').style.display = 'none';
+                    return;
+                }
+
+                // In a real app, this would send the file to your API
+                // Simulating success for demonstration
+                document.getElementById('upload-success').style.display = 'block';
+                document.getElementById('upload-error').style.display = 'none';
+
+                // In reality you would use fetch:
+                /*
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/api/upload-excel/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Authorization': 'Bearer YOUR_AUTH_TOKEN'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        document.getElementById('upload-success').style.display = 'block';
+                        document.getElementById('upload-error').style.display = 'none';
+                        // Refresh professors list
+                        fetchProfessors();
+                    } else {
+                        document.getElementById('upload-error').textContent = data.error;
+                        document.getElementById('upload-error').style.display = 'block';
+                        document.getElementById('upload-success').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('upload-error').textContent = 'Error uploading file';
+                    document.getElementById('upload-error').style.display = 'block';
+                    document.getElementById('upload-success').style.display = 'none';
+                });
+                */
+            });
+
+            // Toggle Availability Buttons
+            document.querySelectorAll('.toggle-availability').forEach(button => {
+                button.addEventListener('click', function() {
+                    const professorId = this.getAttribute('data-id');
+                    const currentStatus = this.getAttribute('data-status') === 'true';
+                    const newStatus = !currentStatus;
+
+                    // In a real app, this would update via your API
+                    this.setAttribute('data-status', newStatus.toString());
+                    this.textContent = newStatus ? 'Make Unavailable' : 'Make Available';
+
+                    // Update status cell
+                    const row = this.closest('tr');
+                    const statusCell = row.querySelector('td:nth-child(6)');
+                    statusCell.textContent = newStatus ? 'Available' : 'Unavailable';
+                    statusCell.className = newStatus ? 'status-available' : 'status-unavailable';
+
+                    // In reality you would use fetch:
+                    /*
+                    fetch('/api/update-availability/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer YOUR_AUTH_TOKEN'
+                        },
+                        body: JSON.stringify({
+                            id: professorId,
+                            available: newStatus
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            // Update UI as above
+                        } else {
+                            alert('Error: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error updating availability');
+                    });
+                    */
+                });
+            });
+
+            // Run Assignment Button
+            document.getElementById('run-assignment').addEventListener('click', function() {
+                // In a real app, this would call your API
+                // Simulating success for demonstration
+                document.getElementById('assignment-success').style.display = 'block';
+                document.getElementById('assignment-error').style.display = 'none';
+
+                // Update the sessions table with fake assignments
+                const sessionRows = document.querySelectorAll('#sessions-table tbody tr');
+                sessionRows.forEach(row => {
+                    row.querySelector('td:nth-child(4)').textContent = 'Prof. John Smith';
+                    row.querySelector('td:nth-child(5)').textContent = 'Dr. Jane Doe';
+                });
+
+                // In reality you would use fetch:
+                /*
+                fetch('/api/assign-sessions/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer YOUR_AUTH_TOKEN'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        document.getElementById('assignment-success').style.display = 'block';
+                        document.getElementById('assignment-error').style.display = 'none';
+                        // Refresh sessions list
+                        fetchSessions();
+                    } else {
+                        document.getElementById('assignment-error').textContent = data.error;
+                        document.getElementById('assignment-error').style.display = 'block';
+                        document.getElementById('assignment-success').style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('assignment-error').textContent = 'Error assigning sessions';
+                    document.getElementById('assignment-error').style.display = 'block';
+                    document.getElementById('assignment-success').style.display = 'none';
+                });
+                */
+            });
+
+            // Generate PDF Button
+            document.getElementById('generate-pdf').addEventListener('click', function() {
+                // In a real app, this would download the PDF from your API
+                alert('In a real application, this would download the PDF schedule');
+
+                // In reality you would use this approach:
+                /*
+                window.location.href = '/api/generate-pdf/?token=YOUR_AUTH_TOKEN';
+                */
+            });
+
+            // In a real application, you would have functions to fetch professors and sessions:
+            /*
+            function fetchProfessors() {
+                fetch('/api/professors/', {
+                    headers: {
+                        'Authorization': 'Bearer YOUR_AUTH_TOKEN'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Populate professors table
+                })
+                .catch(error => {
+                    console.error('Error fetching professors:', error);
+                });
+            }
+
+            function fetchSessions() {
+                fetch('/api/sessions/', {
+                    headers: {
+                        'Authorization': 'Bearer YOUR_AUTH_TOKEN'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Populate sessions table
+                })
+                .catch(error => {
+                    console.error('Error fetching sessions:', error);
+                });
+            }
+
+            // Initial fetch
+            fetchProfessors();
+            fetchSessions();
+            */
+        });
+    </script>
+</body>
+</html>
