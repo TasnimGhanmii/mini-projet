@@ -1,7 +1,7 @@
 from django.db import models
 
 class Formula(models.Model):
-    formula = models.CharField(max_length=255, default="courses + td + tp")
+    formula = models.CharField(max_length=255, default="(courses + td + tp * 0.75) * coef")
 
     def __str__(self):
         return self.formula
