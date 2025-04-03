@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surveillance Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007BFF;
+            color: white;
+        }
+        button, a {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 10px 0;
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover, a:hover {
+            background-color: #0056b3;
+        }
+        form {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Surveillance Management System</h1>
+
+    <h2>Upload Excel File</h2>
+    <form action="{% url 'surveillance_api:upload_excel' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="file" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>List of Professors</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Grade</th>
+            <th>Courses</th>
+            <th>TD</th>
+            <th>TP</th>
+            <th>Max Surveillance Hours</th>
+            <th>Availability</th>
+        </tr>
+        {% for professor in professors %}
+        <tr>
+            <td>{{ professor.name }}</td>
+            <td>{{ professor.department }}</td>
+            <td>{{ professor.grade }}</td>
+            <td>{{ professor.courses }}</td>
+            <td>{{ professor.td }}</td>
+            <td>{{ professor.tp }}</td>
+            <td>{{ professor.max_surveillance_hours }}</td>
+            <td>
+                <form action="{% url 'surveillance_api:update_availability' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="id" value="{{ professor.id }}">
+                    <select name="available" onchange="this.form.submit()">
+                        <option value="True" {% if professor.available %}selected{% endif %}>Available</option>
+                        <option value="False" {% if not professor.available %}selected{% endif %}>Unavailable</option>
+                    </select>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>List of Sessions</h2>
+    <table>
+        <tr>
+            <th>Session ID</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Professor 1</th>
+            <th>Professor 2</th>
+        </tr>
+        {% for session in sessions %}
+        <tr>
+            <td>{{ session.session_id }}</td>
+            <td>{{ session.date }}</td>
+            <td>{{ session.time }}</td>
+            <td>{{ session.professor_1 }}</td>
+            <td>{{ session.professor_2 }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Actions</h2>
+    <form action="{% url 'surveillance_api:assign_sessions' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Assign Sessions</button>
+    </form>
+
+    <a href="{% url 'surveillance_api:generate_pdf' %}" target="_blank">Download PDF</a>
+
+</body>
+</html>

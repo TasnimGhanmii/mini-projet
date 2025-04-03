@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -85,9 +86,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
     ),
 }
-
-# JWT Settings
-from datetime import timedelta
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
